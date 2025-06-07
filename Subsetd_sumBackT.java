@@ -1,46 +1,45 @@
 import java.util.*;
 
-public class SubsetSumZero {
+public class SubsetSumZeroBacktracking {
 
     public static void main(String[] args) {
-       
         int[] numeros = {-7, -3, -2, 5, 8};
 
         System.out.println("Array de entrada: " + Arrays.toString(numeros));
-        System.out.println("Buscando subconjuntos com soma zero...");
+        System.out.println("Buscando subconjuntos com soma zero (usando backtracking)...");
 
-      
-        encontrarSubconjuntosSomaZero(numeros);
-    }
+        List<Integer> subconjuntoAtual = new ArrayList<>();
+        boolean[] encontrou = {false}; // Para saber se pelo menos um subconjunto foi encontrado
 
-    public static void encontrarSubconjuntosSomaZero(int[] numeros) {
-        int n = numeros.length;
-        boolean encontrou = false;
+        buscarSubconjuntos(0, numeros, subconjuntoAtual, 0, encontrou);
 
-        for (int i = 1; i < (1 << n); i++) {
-            List<Integer> subconjunto = new ArrayList<>();
-            int soma = 0;
-
-            System.out.print("Subconjunto gerado: { ");
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j)) != 0) {
-                    subconjunto.add(numeros[j]);
-                    soma += numeros[j];
-                    System.out.print(numeros[j] + " ");
-                }
-            }
-            System.out.print("} -> Soma: " + soma);
-
-            if (soma == 0) {
-                System.out.println("  <- Soma zero encontrada!");
-                encontrou = true;
-            } else {
-                System.out.println();
-            }
-        }
-
-        if (!encontrou) {
+        if (!encontrou[0]) {
             System.out.println("Nenhum subconjunto com soma zero foi encontrado.");
         }
+    }
+
+   
+    public static void buscarSubconjuntos(int indice, int[] numeros, List<Integer> subconjuntoAtual, int somaAtual, boolean[] encontrou) {
+        
+        System.out.println("Índice: " + indice + ", Subconjunto atual: " + subconjuntoAtual + ", Soma atual: " + somaAtual);
+
+        if (somaAtual == 0 && !subconjuntoAtual.isEmpty()) {
+            System.out.println("Subconjunto encontrado com soma zero: " + subconjuntoAtual);
+            encontrou[0] = true;
+            
+        }
+
+        
+        if (indice == numeros.length) {
+            return;
+        }
+
+        
+        subconjuntoAtual.add(numeros[indice]);
+        buscarSubconjuntos(indice + 1, numeros, subconjuntoAtual, somaAtual + numeros[indice], encontrou);
+
+    
+        subconjuntoAtual.remove(subconjuntoAtual.size() - 1);
+        buscarSubconjuntos(indice + 1, numeros, subconjuntoAtual, somaAtual, encontrou);
     }
 }
