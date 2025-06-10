@@ -1,34 +1,50 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class SubsetSum {
-
+public class SubsetSumIterativo {
     public static void main(String[] args) {
-        int[] numeros = {-7, -3, -2, 5, 8};
+        int[] numeros = { -7, -3, -2, 5, 8 };
 
-        System.out.println("Subconjuntos com soma zero:");
-        encontrarSubconjuntosComSomaZero(numeros);
-    }
+        // Inicializa a lista de subconjuntos com o subconjunto vazio
+        List<List<Integer>> subconjuntos = new ArrayList<>();
+        subconjuntos.add(new ArrayList<>()); // subconjunto vazio
 
-    public static void encontrarSubconjuntosComSomaZero(int[] numeros) {
-        int n = numeros.length;
-        // Total de subconjuntos possíveis (2^n)
-        int totalSubconjuntos = (1 << n);
+        // Iterativamente constrói subconjuntos
+        for (int num : numeros) {
+            // Novos subconjuntos formados ao adicionar o elemento atual
+            List<List<Integer>> novosSubconjuntos = new ArrayList<>();
 
-        for (int mascara = 1; mascara < totalSubconjuntos; mascara++) { // Começamos de 1 para evitar subconjunto vazio
-            List<Integer> subconjunto = new ArrayList<>();
+            for (List<Integer> subconjunto : subconjuntos) {
+                List<Integer> novoSubconjunto = new ArrayList<>(subconjunto);
+                novoSubconjunto.add(num);
+                novosSubconjuntos.add(novoSubconjunto);
+            }
+
+            // Adiciona os novos subconjuntos à lista principal
+            subconjuntos.addAll(novosSubconjuntos);
+        }
+
+        // Remover o subconjunto vazio e mostrar cada passo
+        subconjuntos.removeIf(List::isEmpty);
+
+        // Lista final com subconjuntos que somam zero
+        List<List<Integer>> subconjuntosZero = new ArrayList<>();
+
+        for (List<Integer> subconjunto : subconjuntos) {
             int soma = 0;
-
-            for (int i = 0; i < n; i++) {
-                if ((mascara & (1 << i)) != 0) { // Checa se o i-ésimo elemento está presente no subconjunto
-                    subconjunto.add(numeros[i]);
-                    soma += numeros[i];
-                }
+            for (int num : subconjunto) {
+                soma += num;
             }
-
+            // Mostrar o passo atual
+            System.out.println("Subconjunto atual: " + subconjunto + " | Soma: " + soma);
             if (soma == 0) {
-                System.out.println(subconjunto);
+                subconjuntosZero.add(subconjunto);
             }
+        }
+
+        // Mostrar o resultado final
+        System.out.println("\nSubconjuntos que somam zero:");
+        for (List<Integer> subconjunto : subconjuntosZero) {
+            System.out.println(subconjunto);
         }
     }
 }
